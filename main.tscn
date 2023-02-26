@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://cdbpaiqms1wpo"]
+[gd_scene load_steps=21 format=3 uid="uid://cdbpaiqms1wpo"]
 
 [ext_resource type="Shader" path="res://simulation.gdshader" id="1_wj5qs"]
 [ext_resource type="Script" path="res://main.gd" id="1_ym6gf"]
@@ -18,20 +18,12 @@ sky = SubResource("Sky_1qwgr")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_l5mqq"]
-viewport_path = NodePath("Collision")
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_qcqj5"]
-viewport_path = NodePath("Simulation")
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cg4ft"]
 resource_local_to_scene = true
 shader = ExtResource("1_wj5qs")
-shader_parameter/attenuation = 0.995
-shader_parameter/col_tex = SubResource("ViewportTexture_l5mqq")
-shader_parameter/deltaUV = 2.3
 shader_parameter/phase = 0.18
-shader_parameter/sim_tex = SubResource("ViewportTexture_qcqj5")
+shader_parameter/attenuation = 0.995
+shader_parameter/deltaUV = 2.3
 
 [sub_resource type="Environment" id="Environment_38vk1"]
 background_mode = 1
@@ -89,19 +81,23 @@ size = Vector2(10.1, 10.1)
 subdivide_width = 500
 subdivide_depth = 500
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_fidam"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_m1c3a"]
+viewport_path = NodePath("Simulation")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ceg2r"]
 viewport_path = NodePath("Simulation")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_f7voy"]
 resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("2_7fen6")
-shader_parameter/amplitude = null
-shader_parameter/deep_water = null
-shader_parameter/murkiness = null
-shader_parameter/refraction_strength = null
-shader_parameter/shallow_water = null
-shader_parameter/simulation = SubResource("ViewportTexture_fidam")
+shader_parameter/amplitude = 0.5
+shader_parameter/refraction_strength = 0.1
+shader_parameter/deep_water = Color(0, 0, 1, 1)
+shader_parameter/shallow_water = Color(0, 1, 1, 1)
+shader_parameter/murkiness = 0.3
+shader_parameter/simulation2 = SubResource("ViewportTexture_ceg2r")
+shader_parameter/simulation = SubResource("ViewportTexture_m1c3a")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ntba4"]
 material = SubResource("ShaderMaterial_f7voy")
@@ -120,7 +116,7 @@ transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -
 shadow_enabled = true
 
 [node name="Simulation" type="SubViewport" parent="."]
-size = Vector2i(514, 514)
+size = Vector2i(514, 512)
 render_target_clear_mode = 2
 render_target_update_mode = 4
 
@@ -134,7 +130,7 @@ grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
 [node name="Collision" type="SubViewport" parent="."]
-size = Vector2i(514, 514)
+size = Vector2i(514, 512)
 render_target_update_mode = 4
 
 [node name="WaterCam" type="Camera3D" parent="Collision"]
