@@ -1,8 +1,9 @@
-[gd_scene load_steps=21 format=3 uid="uid://cdbpaiqms1wpo"]
+[gd_scene load_steps=26 format=3 uid="uid://cdbpaiqms1wpo"]
 
 [ext_resource type="Shader" path="res://simulation.gdshader" id="1_wj5qs"]
 [ext_resource type="Script" path="res://main.gd" id="1_ym6gf"]
 [ext_resource type="Shader" uid="uid://c7d7kiigmb7le" path="res://main.tres" id="2_7fen6"]
+[ext_resource type="Shader" uid="uid://v3wvmylpqv6y" path="res://buffer.tres" id="2_dfset"]
 [ext_resource type="Material" uid="uid://nc7fpw5shjum" path="res://tile.tres" id="3_1mcda"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_idmas"]
@@ -18,12 +19,28 @@ sky = SubResource("Sky_1qwgr")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="ViewportTexture" id="ViewportTexture_fn5i0"]
+viewport_path = NodePath("Simulation")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6vesp"]
+resource_local_to_scene = true
+shader = ExtResource("2_dfset")
+shader_parameter/Texture2DParameter = SubResource("ViewportTexture_fn5i0")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_2psol"]
+viewport_path = NodePath("Collision")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_iyhgh"]
+viewport_path = NodePath("SimulationBuffer")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cg4ft"]
 resource_local_to_scene = true
 shader = ExtResource("1_wj5qs")
 shader_parameter/phase = 0.18
 shader_parameter/attenuation = 0.995
 shader_parameter/deltaUV = 2.3
+shader_parameter/sim_tex = SubResource("ViewportTexture_iyhgh")
+shader_parameter/col_tex = SubResource("ViewportTexture_2psol")
 
 [sub_resource type="Environment" id="Environment_38vk1"]
 background_mode = 1
@@ -93,9 +110,9 @@ render_priority = 0
 shader = ExtResource("2_7fen6")
 shader_parameter/amplitude = 0.5
 shader_parameter/refraction_strength = 0.1
-shader_parameter/deep_water = Color(0, 0, 1, 1)
-shader_parameter/shallow_water = Color(0, 1, 1, 1)
-shader_parameter/murkiness = 0.3
+shader_parameter/deep_water = Color(0, 0.168627, 0.643137, 0.945098)
+shader_parameter/shallow_water = Color(0, 0.34902, 0.34902, 0.67451)
+shader_parameter/murkiness = 0.407
 shader_parameter/simulation2 = SubResource("ViewportTexture_ceg2r")
 shader_parameter/simulation = SubResource("ViewportTexture_m1c3a")
 
@@ -114,6 +131,20 @@ environment = SubResource("Environment_synaj")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
+
+[node name="SimulationBuffer" type="SubViewport" parent="."]
+size = Vector2i(514, 512)
+render_target_clear_mode = 2
+render_target_update_mode = 4
+
+[node name="ColorRect" type="ColorRect" parent="SimulationBuffer"]
+material = SubResource("ShaderMaterial_6vesp")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
 
 [node name="Simulation" type="SubViewport" parent="."]
 size = Vector2i(514, 512)

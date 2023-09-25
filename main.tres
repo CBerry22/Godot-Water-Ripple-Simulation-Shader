@@ -97,6 +97,8 @@ input_name = "vertex"
 
 [resource]
 code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_schlick_ggx;
+
 uniform sampler2D simulation2;
 uniform float amplitude = 0.5;
 uniform float refraction_strength = 0.10000000149012;
@@ -202,8 +204,7 @@ void fragment() {
 // LinearSceneDepth:21
 	{
 		float __log_depth = textureLod(depth_tex_frg_21, SCREEN_UV, 0.0).x;
-		vec3 __depth_ndc = vec3(SCREEN_UV * 2.0 - 1.0, __log_depth);
-		vec4 __depth_view = INV_PROJECTION_MATRIX * vec4(__depth_ndc, 1.0);
+	vec4 __depth_view = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, __log_depth, 1.0);
 		__depth_view.xyz /= __depth_view.w;
 		n_out21p0 = -__depth_view.z;
 	}
